@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>בור ועם הארץ</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="בור ועם הארץ">
+<meta name="theme-color" content="#f3e6cc">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Secular+One&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+:root{
+  --sand:#f3e6cc; --sand2:#ead7b2; --stone:#fbf5e8; --ink:#2b2118; --ink2:#6b5a48;
+  --sea:#1f6fb2; --sign:#0b4f9c; --olive:#5f7a2e; --terra:#c4582f; --gold:#e0a526;
+  --red:#c0392b; --ok:#2e8b57; --card:#fffaf0; --shadow:0 6px 0 rgba(90,60,30,.18), 0 10px 24px rgba(90,60,30,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;overflow-x:hidden}
+body{
+  font-family:Rubik,system-ui,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255,255,255,.55), transparent 40%),
+    repeating-linear-gradient(0deg, transparent 0 38px, rgba(160,120,70,.08) 38px 40px),
+    repeating-linear-gradient(90deg, transparent 0 78px, rgba(160,120,70,.06) 78px 80px),
+    var(--sand);
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+h1,h2,h3,.display{font-family:"Secular One",Rubik,sans-serif;font-weight:400;margin:0}
+button{font-family:inherit;cursor:pointer;border:0}
+.wrap{max-width:980px;margin:0 auto;padding:14px 14px 40px}
+.hidden{display:none!important}
+
+/* header */
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.top .logo{width:58px;height:58px;flex:none}
+.top h1{font-size:28px;line-height:1;color:var(--sign)}
+.top .sub{font-size:13px;color:var(--ink2)}
+.top .room{margin-inline-start:auto;background:var(--sign);color:#fff;border-radius:10px;padding:6px 10px;font-weight:700;font-size:14px;border:2px solid #fff;box-shadow:0 0 0 2px var(--sign)}
+
+.card{background:var(--card);border-radius:20px;padding:18px;box-shadow:var(--shadow);border:2px solid #e8d6b4}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:18px;padding:14px 20px;border-radius:14px;color:#fff;background:var(--sign);box-shadow:0 4px 0 #073670;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #073670}
+.btn.olive{background:var(--olive);box-shadow:0 4px 0 #3f5419}
+.btn.terra{background:var(--terra);box-shadow:0 4px 0 #8a3a1c}
+.btn.red{background:var(--red);box-shadow:0 4px 0 #7d241b}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 #d9c49c;border:2px solid #e3cfa8}
+.btn.small{font-size:15px;padding:9px 14px;border-radius:11px}
+.btn:disabled{opacity:.45;pointer-events:none}
+.btn.block{width:100%}
+input.txt{font-family:inherit;font-size:19px;padding:13px 14px;border-radius:12px;border:2px solid #dcc49a;background:#fff;width:100%;outline:none;color:var(--ink)}
+input.txt:focus{border-color:var(--sea)}
+label.lb{display:block;font-weight:700;margin:12px 0 6px;font-size:15px;color:var(--ink2)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--ink2);font-size:14px}
+.center{text-align:center}
+
+/* home */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}
+.hero .mapbox{position:relative;max-width:330px;margin:0 auto;width:100%}
+.hero .mapbox svg.map{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 10px rgba(90,60,30,.25))}
+.hero .mapbox .ibexOnMap{position:absolute;width:58%;left:-24%;top:58%}
+.hero h2{font-size:44px;color:var(--sign);line-height:1}
+.hero .tag{font-size:17px;margin:8px 0 16px;color:var(--ink2)}
+.titles{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 16px}
+.titles span{background:#fff;border:2px dashed var(--terra);color:var(--terra);font-weight:700;border-radius:999px;padding:4px 10px;font-size:14px}
+.homebtns{display:grid;gap:12px}
+@media (max-width:720px){
+  .hero{grid-template-columns:1fr}
+  .hero .mapbox{max-width:220px}
+  .hero h2{font-size:38px;text-align:center}
+  .hero .tag{text-align:center}
+  .titles{justify-content:center}
+}
+
+/* lobby */
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0}
+.pchip{display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:8px 10px;border:2px solid #ecdcbc;position:relative}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;flex:none;font-size:16px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08)}
+.pchip .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pchip .you{font-size:11px;background:var(--gold);color:#fff;border-radius:6px;padding:1px 5px;margin-inline-start:4px}
+.off{opacity:.45}
+.codebig{font-family:"Secular One";font-size:46px;letter-spacing:6px;color:var(--sign);direction:ltr;text-align:center}
+
+/* game */
+.game{display:grid;grid-template-columns:250px 1fr;gap:14px}
+@media (max-width:760px){.game{grid-template-columns:1fr}.side{order:2}}
+.side .card{padding:12px}
+.players{display:grid;gap:8px}
+.pl{display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:8px;border:2px solid #ecdcbc;transition:.2s}
+.pl.turn{border-color:var(--gold);box-shadow:0 0 0 3px rgba(224,165,38,.3);transform:scale(1.02)}
+.pl.out{opacity:.5;filter:grayscale(.8)}
+.pl .info{flex:1;min-width:0}
+.pl .nm{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl .ttl{font-size:12px;font-weight:700;color:var(--terra)}
+.pl .ttl.clean{color:var(--olive)}
+.horns{display:flex;gap:2px}
+.horns i{width:9px;height:18px;border-radius:9px 9px 2px 2px;background:#e9dcc4;display:block}
+.horns i.on{background:var(--red)}
+@media (max-width:760px){
+  .players{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+
+.mascot{display:flex;align-items:flex-end;gap:8px;margin-bottom:10px}
+.mascot .ibex{width:88px;flex:none}
+.bubble{position:relative;background:#fff;border:2px solid #e3cfa8;border-radius:18px;padding:10px 14px;font-weight:700;font-size:17px;flex:1;box-shadow:0 3px 0 #e3cfa8}
+.bubble:after{content:"";position:absolute;right:-10px;bottom:16px;border:9px solid transparent;border-left-color:#e3cfa8;border-right:0}
+.bubble small{display:block;font-weight:400;color:var(--ink2);font-size:13px;margin-top:2px}
+
+.board{position:relative;overflow:hidden;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.board .bgmap{position:absolute;left:8px;top:50%;transform:translateY(-50%) rotate(-4deg);height:190%;opacity:.2;pointer-events:none}
+.board .bgmap2{position:absolute;right:8px;top:50%;transform:translateY(-50%) rotate(5deg);height:190%;opacity:.2;pointer-events:none}
+.sign{position:relative;background:var(--sign);border:4px solid #fff;outline:3px solid var(--sign);border-radius:14px;padding:14px 18px;min-width:220px;min-height:86px;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;box-shadow:0 10px 18px rgba(11,79,156,.25)}
+.sign .post{position:absolute;bottom:-46px;width:10px;height:44px;background:#9aa3ad;left:50%;margin-left:-5px;z-index:-1}
+.tile{font-family:"Secular One";font-size:44px;color:#fff;min-width:38px;text-align:center;line-height:1;position:relative}
+.tile.new{animation:pop .35s}
+.tile b{position:absolute;bottom:-9px;left:50%;width:10px;height:5px;margin-left:-5px;border-radius:3px}
+.tile.ghost{opacity:.35}
+.sign .empty{color:rgba(255,255,255,.65);font-size:18px;font-weight:700}
+.sign .km{position:absolute;top:-14px;right:12px;background:#fff;color:var(--sign);font-size:12px;font-weight:900;border-radius:6px;padding:1px 7px;border:2px solid var(--sign)}
+@keyframes pop{0%{transform:scale(.2) rotate(-15deg);opacity:0}70%{transform:scale(1.2)}100%{transform:none;opacity:1}}
+
+.kbd{display:grid;gap:6px;margin-top:12px;direction:rtl}
+.kbd .kr{display:flex;gap:4px;justify-content:center}
+.key{font-family:"Secular One";font-size:22px;width:min(calc((100vw - 104px) / 8),52px);height:50px;padding:0;border-radius:11px;background:#fff;color:var(--ink);box-shadow:0 4px 0 #d9c49c;border:2px solid #ecdcbc}
+.key.sel{background:var(--gold);color:#fff;border-color:var(--gold);box-shadow:0 4px 0 #a5770f;transform:translateY(-2px)}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.chk{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:10px;font-weight:700;color:var(--ink2);user-select:none}
+.chk input{width:22px;height:22px;accent-color:var(--olive)}
+
+.sign.long .tile{font-size:32px;min-width:26px}
+.sign.xlong .tile{font-size:24px;min-width:19px}
+.sign.long{gap:3px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:center;margin-top:6px}
+.chips span{background:#fff;border:2px solid #ecdcbc;border-radius:999px;padding:2px 10px;font-weight:700;font-size:14px}
+.chips i{font-style:normal;color:var(--ink2)}
+.black{margin-top:12px;background:#2b2118;color:#fff;border-radius:14px;padding:10px}
+.black .bt{font-weight:700;font-size:14px}.black .muted{color:#cbb89a;font-size:12px}
+.black .chips{justify-content:flex-start}
+.black .chips span{background:#43352a;border-color:#5b4a3b;color:#fff;text-decoration:line-through;text-decoration-color:#c0392b;font-size:13px}
+.diffs{font-size:14px;color:var(--ink2);margin-top:4px}
+.timer{display:flex;align-items:center;gap:10px;max-width:420px;margin:14px auto 0}
+.tbar{flex:1;height:12px;background:#eadcc0;border-radius:99px;overflow:hidden}
+.tbar i{display:block;height:100%;background:var(--olive);border-radius:99px;transition:width .25s linear}
+.timer span{font-family:"Secular One";font-size:22px;min-width:34px;text-align:center;color:var(--olive)}
+.timer.low .tbar i{background:var(--red)}.timer.low span{color:var(--red);animation:pulse .5s infinite alternate}
+@keyframes pulse{to{transform:scale(1.25)}}
+.split{margin-top:12px;background:var(--sand);border-radius:12px;padding:8px}
+.log{margin-top:12px;font-size:13px;color:var(--ink2);display:grid;gap:3px}
+.log div:first-child{color:var(--ink);font-weight:500}
+
+.passbar{background:var(--gold);color:#fff;font-weight:900;text-align:center;border-radius:12px;padding:8px;margin-bottom:10px;font-size:16px}
+.votes{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.vchip{font-size:13px;background:#fff;border:2px solid #ecdcbc;border-radius:999px;padding:3px 10px}
+.vrow{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+
+/* overlay */
+.ov{position:fixed;inset:0;background:rgba(43,33,24,.55);display:grid;place-items:center;padding:16px;z-index:50;animation:fade .2s}
+.ov .card{max-width:440px;width:100%;text-align:center;animation:pop .35s}
+.bigemoji{font-size:58px;line-height:1}
+.newtitle{display:inline-block;margin-top:8px;font-family:"Secular One";font-size:30px;color:#fff;background:var(--red);padding:6px 16px;border-radius:12px;transform:rotate(-3deg);box-shadow:0 4px 0 #7d241b}
+.newtitle.good{background:var(--ok);box-shadow:0 4px 0 #1d5e3a}
+@keyframes fade{from{opacity:0}}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;z-index:80;max-width:90vw;text-align:center}
+.rules{font-size:15px;line-height:1.6}
+.rules li{margin-bottom:6px}
+a{color:var(--sea)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top" id="topbar">
+    <svg class="logo" data-ibex></svg>
+    <div><h1>בור ועם הארץ</h1><div class="sub">ערים, כפרים, מושבים, קיבוצים – כל יישוב בארץ!</div></div>
+    <div class="room hidden" id="roomTag"></div>
+  </div>
+  <div id="app"></div>
+</div>
+<div id="overlay"></div>
+
+<script>
+/* ================== DATA: יישובים בארץ ================== */
+const PLACES_RAW = `ירושלים,תל אביב,תל אביב יפו,יפו,חיפה,ראשון לציון,פתח תקווה,פתח תקוה,אשדוד,נתניה,באר שבע,בני ברק,חולון,רמת גן,אשקלון,רחובות,בת ים,בית שמש,כפר סבא,הרצליה,חדרה,מודיעין,מודיעין מכבים רעות,מכבים,רעות,נצרת,לוד,רמלה,רעננה,רהט,הוד השרון,גבעתיים,קריית אתא,קרית אתא,נהריה,קריית גת,קרית גת,אום אל פחם,אילת,ראש העין,עפולה,נס ציונה,עכו,אלעד,רמת השרון,כרמיאל,יבנה,טבריה,טייבה,קריית מוצקין,קרית מוצקין,שפרעם,נוף הגליל,נצרת עילית,קריית ים,קרית ים,קריית ביאליק,קרית ביאליק,קריית אונו,קרית אונו,מעלה אדומים,אור יהודה,צפת,נתיבות,דימונה,טמרה,סחנין,יהוד,יהוד מונוסון,באקה אל גרבייה,אופקים,גבעת שמואל,טירה,ערד,מגדל העמק,שדרות,עראבה,נשר,קריית שמונה,קרית שמונה,יקנעם,יקנעם עילית,כפר קאסם,כפר יונה,קלנסווה,קריית מלאכי,קרית מלאכי,מעלות,מעלות תרשיחא,טירת כרמל,אריאל,אור עקיבא,בית שאן,ביתר עילית,מודיעין עילית,קצרין,מצפה רמון,ירוחם,זכרון יעקב,פרדס חנה,כרכור,פרדס חנה כרכור,גדרה,גן יבנה,באר יעקב,קריית עקרון,קרית עקרון,מזכרת בתיה,ראש פינה,מטולה,יסוד המעלה,עתלית,בנימינה,גבעת עדה,אבן יהודה,כפר ורדים,עומר,להבים,מיתר,תל שבע,חורה,כסייפה,ערערה,לקיה,שגב שלום,כפר מנדא,מגאר,דלית אל כרמל,עספיא,פקיעין,ירכא,כאבול,מגדל שמס,מסעדה,בוקעתא,כפר כנא,ריינה,יפיע,אכסאל,דבוריה,טורעאן,עילבון,דיר חנא,קריית טבעון,קרית טבעון,רמת ישי,אלפי מנשה,קרני שומרון,עמנואל,קדומים,אפרת,גבעת זאב,אורנית,אלקנה,בית אל,עפרה,שילה,קריית ארבע,קרית ארבע,חברון,כוכב יאיר,צור יגאל,כוכב יאיר צור יגאל,שוהם,גני תקווה,סביון,כפר שמריהו,קדימה,צורן,קדימה צורן,תל מונד,פרדסיה,אבו גוש,מבשרת ציון,קריית יערים,מגדל,חצור הגלילית,כנרת,יבנאל,בית דגן,כפר חבד,ראש פינה,עמוקה,מירון,שלומי,כפר תבור,כפר קרע,ג'סר א זרקא,פוריידיס,זמר,ג'לג'וליה,כפר ברא,
+דגניה,דגניה א,דגניה ב,עין גדי,יטבתה,סאסא,מעגן מיכאל,שפיים,גבעת ברנר,נען,יגור,עין חרוד,בית השיטה,גבע,משמר העמק,רמת יוחנן,אפיקים,אשדות יעקב,שדה בוקר,רביבים,משאבי שדה,צאלים,בארי,ניר עוז,כפר עזה,נחל עוז,כיסופים,עין השלושה,ניר יצחק,סופה,חולית,נירים,רעים,מפלסים,יד מרדכי,זיקים,כרמיה,ארז,גברעם,נתיב העשרה,אור הנר,רוחמה,דורות,ניר עם,ברור חיל,גבים,שובל,להב,חצרים,משמר הנגב,נחשון,הראל,צרעה,מעלה החמישה,קריית ענבים,קרית ענבים,צובה,רמת רחל,נתיב הלה,גזר,חולדה,נצר סירני,גבעת השלושה,עינת,רמת הכובש,אייל,חורשים,נחשונים,גלאון,בית גוברין,לוחמי הגטאות,יחיעם,כברי,עברון,מצובה,חניתה,אדמית,גשר הזיו,סער,ראש הנקרה,בית העמק,עין המפרץ,כפר מסריק,אפק,יסעור,עין השופט,דליה,רמת השופט,גלעד,הזורע,מזרע,מרחביה,יפעת,שריד,גבת,רמת דוד,אלונים,כפר החורש,גניגר,בית אלפא,חפציבה,מעוז חיים,טירת צבי,שדה אליהו,עין הנציב,כפר רופין,נווה איתן,מסילות,ניר דוד,חמדיה,מעלה גלבוע,מירב,שלוחות,רשפים,גשר,נווה אור,בית זרע,שער הגולן,מסדה,האון,עין גב,תל קציר,מבוא חמה,אפיק,אורטל,מרום גולן,אל רום,עין זיוון,גשור,נאות מרדכי,כפר בלום,כפר גלעדי,מנרה,משגב עם,יפתח,מלכיה,יראון,ברעם,דפנה,דן,שניר,הגושרים,עמיר,שדה נחמיה,כפר הנשיא,מחניים,איילת השחר,חולתה,גדות,גינוסר,חוקוק,לביא,הסוללים,הרדוף,יזרעאל,תל יוסף,בית קשת,אילות,אליפז,סמר,לוטן,קטורה,גרופית,יהל,נאות סמדר,עין חצבה,קליה,אלמוג,מצפה שלם,גבעת חיים,גבעת חיים איחוד,גבעת חיים מאוחד,העוגן,מעברות,משמר השרון,עין החורש,להבות חביבה,מגל,מצר,נחשולים,שדות ים,יקום,געש,נווה ים,עין כרמל,בית אורן,רבדים,כפר מנחם,נגבה,גת,בית ניר,משמרות,כפר גליקסון,עין שמר,מעגן,שער העמקים,אושה,כפר המכבי,גבולות,נירים,ניר אליהו,נצר חזני,יד חנה,בחן,בית גוברין,לוחמי הגטאות,כפר הרואה,עין צורים,כפר עציון,ראש צורים,מגדל עוז,אלון שבות,קשת,עין תמר,
+נהלל,כפר ויתקין,כפר יהושע,בית שערים,עין ורד,כפר הס,שדה ורבורג,צור משה,אביחיל,בית יצחק,כפר ידידיה,בני דרור,כפר חיים,בית חרות,כפר נטר,בית ינאי,חרות,בית חנן,בית עובד,נטעים,ניר צבי,גנות,משמר השבעה,צפריה,חמד,אחיעזר,יגל,שתולים,בני ראם,עזריקם,כפר אחים,באר טוביה,אמונים,שדה עוזיהו,כפר ורבורג,ניר בנים,תלמי יפה,נווה מבטח,בית שקמה,ברכיה,תלמי אליהו,עין הבשור,ישע,תלמי יוסף,פרי גן,יתד,אוהד,מבטחים,עמיעוז,שדה ניצן,דקל,גבעתי,חלץ,מבקיעים,אורות,כפר מימון,שרשרת,תושיה,זמרת,שובה,אבשלום,יבול,ניר משה,תאשור,גילת,פטיש,מסלול,כוכב מיכאל,חצב,נורדיה,בית אלעזרי,בית גמליאל,כפר הנגיד,גני טל,כפר שמואל,משמר איילון,גמזו,שעלבים,נוף איילון,טל שחר,תעוז,תרום,נחם,צלפון,גפן,שריגים,צור הדסה,נס הרים,בר גיורא,אבן ספיר,אורה,עמינדב,בית זית,מוצא עילית,שורש,שואבה,נווה אילן,ישעי,זנוח,בית מאיר,אשתאול,כפר שמאי,אמירים,בר יוחאי,ספסופה,דלתון,שזור,כליל,מורן,לוטם,הררית,יודפת,אשבל,מכמנים,כמון,יעד,עצמון,שכניה,אבטליון,הר חלוץ,קורנית,מנוף,צורית,שורשים,אבירים,פסוטה,מעונה,אלון הגליל,הושעיה,ציפורי,כפר קיש,כפר זיתים,אילניה,כפר חיטים,ארבל,גבעת אבני,שדמות דבורה,פוריה,מנחמיה,בית גן,אלמגור,כורזים,אמנון,רמות,חיספין,רמת מגשימים,נוב,אבני איתן,אניעם,יונתן,נאות גולן,בני יהודה,גבעת יואב,מיצר,אלוני הבשן,קדמת צבי,נווה אטיב,אודם,נמרוד,שעל,קלע,אליעד,נטור,חד נס,כנף,שבי ציון,בצת,לימן,בן עמי,נתיב השיירה,עין יעקב,גורן,גורנות הגליל,אבן מנחם,שתולה,זרעית,נטועה,עלמה,דישון,רמות נפתלי,מרגליות,יובל,שאר ישוב,כפר יובל,שדה אליעזר,משמר הירדן,בית הלל,צור יצחק,צור נתן,נירית,שדה חמד,חגור,מתן,ירחיב,נווה ימין,נווה ירק,גני עם,צופית,כפר מלל,רמות השבים,בני ציון,רשפון,תל יצחק,אודים,בצרה,כפר סירקין,כפר יעבץ,בורגתה,אחיטוב,משמרת,כפר הראה,כפר אזר,מדרשת בן גוריון,נבטים,רתמים,אשלים,טללים,כמהין,ניצנה,עזוז,ניר עקיבא,גבעות בר,פדויים,תפרח,שדה צבי,ברוש,תדהר,מבועים,בית הגדי,שבי דרום,תקומה,עלומים,סעד,עין יהב,חצבה,עידן,צופר,פארן,צוקים,באר אורה,נווה זוהר,עין בוקק,נאות הכיכר,כפר ביל"ו,כפר בילו,קדרון,בית חלקיה,ניר גלים,בית עזרא,עזר,גן הדרום,שדה יעקב,כפר יחזקאל,גדעונה,תל עדשים,בלפוריה,כפר גדעון,היוגב,מגדים,עין איילה,כרם מהרל,עין הוד,ניר עציון,בת שלמה,גבעת ניל"י,עמיקם,אביאל,רגבה,עמקה,בוסתן הגליל,נתיב השיירה,כפר ראש הנקרה,אלישמע,נווה ירק,יעף,בני עטרות,נחלים,מזור,רנתיה,עינת,גבעת כ"ח,כפר טרומן,בית נחמיה,בית עריף,שילת,חשמונאים,כפר האורנים,לפיד,מתתיהו,נילי,תלמון,דולב,חלמיש,בית חורון,גבעון החדשה,הר אדר,קריית נטפים,כוכב השחר,רימונים,מעלה מכמש,פסגות,כוכב יעקב,תקוע,נוקדים,מעלה עמוס,כרמי צור,בת עין,גוש עציון,נווה דניאל,אלעזר,הר ברכה,איתמר,יצהר,ברכה,ברקן,רבבה,יקיר,נופים,רחלים,עלי,מעלה לבונה,שבות רחל,ענב,אבני חפץ,סלעית,צופים,מעלה שומרון,חרמש,מבוא דותן,שקד,ריחן,טל מנשה,חיננית,ג'ש,גוש חלב,חורפיש,בית ג'ן,ראמה,עין ראפה,אבו סנאן,כפר יאסיף,נחף,מגד אל כרום,מג'ד אל כרום,בענה,דיר אל אסד,שעב,כאוכב אבו אל היג'א,זרזיר,ביר אל מכסור,כפר כמא,ריחאניה,נין,סולם,נאעורה,טייבה בעמק,אום אל גנם,שבלי,ג'וליס,כפר סמיע,סאג'ור,עין אל אסד,כסרא,מעיליא,אל עזי,בסמת טבעון,ג'ת,ערב אל עראמשה,ביר הדאג',אום בטין,סח'נין,ג'דיידה,מכר,כפר מצר,טורעאן,עוזייר,רומת הייב,כעביה,חוסנייה,משהד,עין מאהל,בועיינה נוג'ידאת,זלפה,סלמה,מוקייבלה,סנדלה,נצרת,בית זרזיר,אעבלין,אבטין`;
+const FINALS={'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
+const norm=s=>(s||'').replace(/[ךםןףץ]/g,c=>FINALS[c]).replace(/[^א-ת]/g,'');
+const DISPLAY={};PLACES_RAW.split(/[,\n]/).map(x=>x.trim()).filter(Boolean).forEach(x=>{const n=norm(x);if(n&&!DISPLAY[n])DISPLAY[n]=x});
+const PLACES=new Set(Object.keys(DISPLAY));
+
+/* ================== ART ================== */
+// יעל נובי – דמות מקורית
+function ibexSVG(mood){
+  const eye = mood==='shock' ? '<circle cx="45" cy="60" r="4.2" fill="#fff" stroke="#2b2118" stroke-width="1.6"/><circle cx="45" cy="60" r="1.8" fill="#2b2118"/>'
+            : mood==='wink' ? '<path d="M41 60 q4 -3 8 0" stroke="#2b2118" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+            : '<circle cx="45" cy="60" r="3.2" fill="#2b2118"/><circle cx="44" cy="59" r="1" fill="#fff"/>';
+  const mouth = mood==='shock' ? '<ellipse cx="29" cy="76" rx="3" ry="3.6" fill="#5a2d1a"/>' :
+                '<path d="M25 74 q5 4 10 1" stroke="#5a2d1a" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="108" cy="186" rx="62" ry="7" fill="rgba(90,60,30,.18)"/>
+  <!-- horns -->
+  <path d="M60 50 C 66 8, 128 -2, 150 46" stroke="#7c5b36" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <path d="M60 50 C 66 8, 128 -2, 150 46" stroke="#5a3f22" stroke-width="13" fill="none" stroke-dasharray="2.5 6" />
+  <path d="M52 50 C 52 14, 110 0, 134 40" stroke="#94704a" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <path d="M52 50 C 52 14, 110 0, 134 40" stroke="#6b4d2c" stroke-width="10" fill="none" stroke-dasharray="2 5.5"/>
+  <!-- tail -->
+  <path d="M153 98 q12 -8 10 -18" stroke="#4a3320" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <!-- back legs -->
+  <path d="M138 120 L142 170" stroke="#b7834c" stroke-width="12" stroke-linecap="round"/>
+  <path d="M124 122 L122 172" stroke="#c99a62" stroke-width="12" stroke-linecap="round"/>
+  <!-- body -->
+  <path d="M62 96 C 70 80, 140 78, 156 96 C 166 112, 150 134, 120 134 C 96 136, 70 130, 64 116 Z" fill="#d4a46a"/>
+  <path d="M74 122 C 96 134, 128 136, 148 124 C 140 134, 120 138, 100 136 C 86 134, 78 130, 74 122 Z" fill="#f3dfbf"/>
+  <path d="M84 94 C 104 102, 130 100, 150 92" stroke="#7d5530" stroke-width="3" fill="none" opacity=".45" stroke-linecap="round"/>
+  <!-- front legs -->
+  <path d="M86 124 L84 172" stroke="#c99a62" stroke-width="12" stroke-linecap="round"/>
+  <path d="M72 120 L66 170" stroke="#b7834c" stroke-width="12" stroke-linecap="round"/>
+  <path d="M86 140 L85 160 M72 136 L69 158" stroke="#3d2a19" stroke-width="5" stroke-linecap="round"/>
+  <path d="M60 172 h13 M79 174 h12 M116 174 h12 M136 172 h12" stroke="#2b2118" stroke-width="6" stroke-linecap="round"/>
+  <!-- neck -->
+  <path d="M50 66 C 54 80, 60 96, 64 108 L 92 100 C 84 84, 74 66, 66 52 Z" fill="#cf9d62"/>
+  <!-- head -->
+  <path d="M40 48 C 52 44, 64 50, 66 60 C 66 70, 50 82, 30 82 C 20 82, 16 74, 20 68 C 26 60, 30 52, 40 48 Z" fill="#d9ab72"/>
+  <path d="M20 70 C 18 76, 22 82, 30 82 C 26 78, 24 74, 20 70 Z" fill="#8a6a43"/>
+  <ellipse cx="22" cy="70" rx="2.2" ry="1.6" fill="#3d2a19"/>
+  <!-- beard -->
+  <path d="M34 80 C 34 92, 40 100, 44 104 C 46 96, 46 88, 46 80 Z" fill="#4a3320"/>
+  <!-- ear -->
+  <path d="M62 52 C 74 48, 82 50, 86 56 C 78 60, 70 60, 62 58 Z" fill="#b98652"/>
+  ${eye}${mouth}
+  <ellipse cx="38" cy="70" rx="4" ry="2.4" fill="#f0a37a" opacity=".6"/>
+</svg>`;
+}
+// מפת ישראל (קו מתאר דקורטיבי, מקורב)
+const BORDER=[[35.105,33.09],[35.09,33.0],[35.07,32.93],[35.08,32.86],[35.02,32.82],[34.96,32.83],[34.95,32.72],[34.92,32.6],[34.88,32.45],[34.85,32.33],[34.8,32.17],[34.75,32.06],[34.73,31.98],[34.63,31.8],[34.54,31.67],[34.56,31.57],[34.48,31.5],[34.37,31.38],[34.27,31.22],[34.4,30.85],[34.52,30.5],[34.7,30.05],[34.88,29.6],[34.9,29.49],[34.97,29.55],[35.06,29.85],[35.15,30.15],[35.25,30.45],[35.35,30.8],[35.42,31.1],[35.46,31.35],[35.5,31.6],[35.55,31.78],[35.55,32.1],[35.55,32.4],[35.57,32.64],[35.65,32.69],[35.78,32.74],[35.85,32.85],[35.88,33.05],[35.95,33.2],[35.82,33.33],[35.62,33.28],[35.58,33.27],[35.52,33.1],[35.42,33.07],[35.3,33.1],[35.2,33.08],[35.105,33.09]];
+const KINNERET=[[35.53,32.88],[35.6,32.86],[35.65,32.8],[35.64,32.72],[35.59,32.7],[35.54,32.76],[35.52,32.83]];
+const DEADSEA=[[35.48,31.75],[35.55,31.75],[35.56,31.5],[35.5,31.3],[35.44,31.2],[35.4,31.25],[35.44,31.45]];
+const CITIES=[['ירושלים',35.21,31.77],['תל אביב',34.78,32.08],['חיפה',35.0,32.8],['באר שבע',34.79,31.25],['אילת',34.95,29.56],['טבריה',35.53,32.79]];
+function projPts(arr){return arr.map(([lo,la])=>{const x=(lo-34.15)*100,y=(33.45-la)*118;return x.toFixed(1)+','+y.toFixed(1)}).join(' ')}
+function mapSVG(cls){
+  const cities=CITIES.map(([n,lo,la])=>{const x=(lo-34.15)*100,y=(33.45-la)*118;
+    return `<circle cx="${x}" cy="${y}" r="4" fill="#c4582f" stroke="#fff" stroke-width="1.5"/><text x="${x-7}" y="${y+4}" font-size="11" font-family="Rubik" font-weight="700" fill="#5a3f22" text-anchor="start" direction="rtl">${n}</text>`}).join('');
+  return `<svg class="${cls||'map'}" viewBox="-20 -10 220 480" xmlns="http://www.w3.org/2000/svg">
+   <defs><linearGradient id="land" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9bb46a"/><stop offset=".42" stop-color="#d9c48e"/><stop offset="1" stop-color="#e7b77a"/></linearGradient></defs>
+   <polygon points="${projPts(BORDER)}" fill="url(#land)" stroke="#5a3f22" stroke-width="3" stroke-linejoin="round"/>
+   <polygon points="${projPts(KINNERET)}" fill="#3d8fd1" stroke="#1f6fb2" stroke-width="1.5"/>
+   <polygon points="${projPts(DEADSEA)}" fill="#5aa6d6" stroke="#1f6fb2" stroke-width="1.5"/>
+   ${cities}
+  </svg>`;
+}
+document.querySelectorAll('[data-ibex]').forEach(el=>{el.outerHTML=ibexSVG().replace('<svg','<svg class="logo"')});
+
+/* ================== ENGINE (host authoritative) ================== */
+const TITLES=['נקי','בור','בור ועם','בור ועם הארץ'];
+const COLORS=['#0b4f9c','#c4582f','#5f7a2e','#8e44ad','#d4a017','#16a085','#c0392b','#2c3e50','#e67e22','#7f8c8d'];
+const MAXP=10, MINP=3, TURN_MS=30000;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rid=()=>Math.random().toString(36).slice(2,10);
+
+function newState(){return {phase:'lobby',players:[],letters:[],turn:null,lastBy:null,accused:null,challenger:null,claim:null,votes:{},result:null,round:0,winner:null,log:[],black:[],v:0}}
+const P=(s,id)=>s.players.find(p=>p.id===id);
+const nm=(s,id)=>(P(s,id)||{}).name||'?';
+const activeP=s=>s.players.filter(p=>!p.out);
+function nextActive(s,id){const i=s.players.findIndex(p=>p.id===id);for(let k=1;k<=s.players.length;k++){const p=s.players[(i+k)%s.players.length];if(!p.out)return p.id}return null}
+const word=s=>s.letters.map(l=>l.ch).join('');
+function addLog(s,t){s.log.unshift(t);s.log=s.log.slice(0,10)}
+function startRound(s,starter){
+  s.round++;s.letters=[];s.phase='turn';s.turn=starter;s.deadline=Date.now()+TURN_MS;s.lastBy=null;s.accused=s.challenger=null;s.claim=null;s.votes={};s.result=null;
+  addLog(s,`🚩 סבב ${s.round} – ${nm(s,starter)} פותח/ת`);
+}
+function voters(s){return activeP(s).filter(p=>p.id!==s.claim.by).map(p=>p.id)}
+
+/* --- "השולט": מפרק את רצף האותיות למקומות --- */
+// שלד = בלי ו/י (חוץ מהאות הראשונה) – לבדיקת כתיב מלא/חסר
+const skel=n=>n.length?n[0]+n.slice(1).replace(/[וי]/g,''):'';
+const SK={}; PLACES.forEach(n=>{(SK[skel(n)]=SK[skel(n)]||[]).push(n)});
+const isBlack=(s,n)=>s.black.some(b=>b.n===n);
+const showName=(s,n)=>DISPLAY[n]||n;
+// מועמדים למקום שנכתב כ-w: מדויק, או (fuzzy) עם הבדל ו/י
+function cands(s,w,fuzzy){
+  if(PLACES.has(w)&&!isBlack(s,w)) return [w];
+  if(!fuzzy) return [];
+  return (SK[skel(w)]||[]).filter(n=>!isBlack(s,n));
+}
+let _steps=0;
+// מפרק רצף שלם למקומות, בלי לחזור על מקום – מחזיר [{n, said}] או null
+function decompose(s,str,used,fuzzy,top=true){
+  if(top)_steps=0; if(++_steps>60000) return null;
+  if(!str.length) return [];
+  for(let len=Math.min(str.length,24);len>=2;len--){
+    const w=str.slice(0,len);
+    for(const n of cands(s,w,fuzzy)){
+      if(used.has(n))continue;
+      used.add(n);const rest=decompose(s,str.slice(len),used,fuzzy,false);if(rest)return [{n,said:w},...rest];used.delete(n);
+    }
+  }
+  return null;
+}
+// האותיות = מקומות שלמים + התחלה של המקום הנטען
+function analyze(s,claimN,fuzzy){
+  const st=norm(word(s));
+  for(let k=st.length-1;k>=0;k--){
+    const suf=st.slice(k);
+    const okPre=fuzzy? skel(claimN).startsWith(skel(suf)) : claimN.startsWith(suf);
+    if(!okPre)continue;
+    const parse=decompose(s,st.slice(0,k),new Set([claimN]),fuzzy);
+    if(parse) return {parse,suf};
+  }
+  return null;
+}
+// המקומות שהושלמו בסבב (לרשימה השחורה) כשאין טענה תקפה
+function roundPlaces(s){
+  const st=norm(word(s));
+  for(const fz of [false,true]) for(let k=st.length;k>=2;k--){const p=decompose(s,st.slice(0,k),new Set(),fz);if(p&&p.length)return p.map(x=>x.n)}
+  return [];
+}
+
+function strike(s,id){const p=P(s,id);p.strikes++;if(p.strikes>=3)p.out=true;return p}
+function finish(s,{loser,real,method,reason}){
+  const c=s.claim||{};
+  const lp=strike(s,loser);
+  let places=[];
+  if(real && c.parse){places=[...c.parse.map(x=>x.n),c.canon]}
+  else places=roundPlaces(s);
+  const added=[];
+  places.forEach(n=>{if(!isBlack(s,n)){s.black.push({n,name:showName(s,n)});added.push(showName(s,n))}});
+  s.result={claimBy:c.by,name:c.name,real,method,reason,loser,challenger:s.challenger,word:word(s),
+    split:places.map(n=>showName(s,n)),added,title:TITLES[lp.strikes],out:lp.out};
+  addLog(s,`💥 ${nm(s,loser)} קיבל/ה פסילה רעה – עכשיו: ${TITLES[lp.strikes]}`);
+  s.phase='result';
+  const act=activeP(s);
+  if(act.length<=1){s.phase='gameover';s.winner=act[0]?act[0].id:null}
+}
+const lie=(s,reason)=>finish(s,{loser:s.claim.by,real:false,method:'rule',reason});
+function judgeClaim(s){
+  const c=s.claim, typed=norm(c.name);
+  // 1. מה המקום? מדויק, או קרוב בכתיב (ו/י)
+  let canon=PLACES.has(typed)?typed:null;
+  if(!canon){const f=SK[skel(typed)]; if(f&&f.length) canon=f[0];}
+  if(!canon) return lie(s,`"${c.name}" לא נמצא ברשימת היישובים שלי`);
+  c.canon=canon;
+  if(isBlack(s,canon)) return lie(s,`${showName(s,canon)} כבר נאמר בסבב קודם – הוא ברשימה השחורה`);
+  // 2. האם האותיות מסתדרות – קודם בדיוק, אחר כך עם הבדלי ו/י
+  let r=analyze(s,canon,false);
+  if(r && canon===typed){c.parse=r.parse;return finish(s,{loser:s.challenger,real:true,method:'db'})}
+  if(!r) r=analyze(s,canon,true);
+  if(!r) return lie(s,`האותיות שנאמרו לא מסתדרות עם "${showName(s,canon)}"`);
+  c.parse=r.parse;
+  // 3. רק הבדלי ו/י -> הקהל מחליט
+  const diffs=[];
+  if(canon!==typed) diffs.push(`נכתב "${c.name}" – ברשימה: "${showName(s,canon)}"`);
+  r.parse.forEach(x=>{if(x.n!==x.said)diffs.push(`נאמר "${x.said}" – ברשימה: "${showName(s,x.n)}"`)});
+  if(!canon.startsWith(r.suf)) diffs.push(`נאמר "...${r.suf}" – ברשימה: "${showName(s,canon)}"`);
+  if(!diffs.length){return finish(s,{loser:s.challenger,real:true,method:'db'})}
+  c.diffs=diffs;
+  s.phase='vote';s.votes={};
+  addLog(s,`🗳️ הבדל של ו/י בכתיב – מצביעים!`);
+}
+function tally(s){
+  const vs=Object.values(s.votes); const yes=vs.filter(v=>v).length, no=vs.length-yes;
+  const ok=yes>=no;   // תיקו = הספק לטובת הטוען
+  finish(s,{loser: ok? s.challenger : s.claim.by, real:ok, method:'vote', reason: ok?'':'הקהל לא קיבל את הכתיב'});
+}
+
+// returns error string or null
+function engine(s,from,a,isHost){
+  const me=P(s,from);
+  switch(a.type){
+    case 'join':{
+      if(me){me.connected=true;if(a.name)me.name=a.name.slice(0,16);return null}
+      if(s.phase!=='lobby')return 'המשחק כבר התחיל 😕';
+      if(s.players.length>=MAXP)return 'החדר מלא (10 שחקנים)';
+      s.players.push({id:from,name:(a.name||'שחקן').slice(0,16),strikes:0,out:false,connected:true,color:COLORS[s.players.length%COLORS.length]});
+      return null}
+    case 'kick':{ if(!isHost||s.phase!=='lobby')return 'אין הרשאה';
+      s.players=s.players.filter(p=>p.id!==a.id);s.players.forEach((p,i)=>p.color=COLORS[i%COLORS.length]);return null}
+    case 'start':{ if(!isHost)return 'רק המארח/ת מתחיל/ה';
+      if(s.players.length<MINP)return 'צריך לפחות 3 שחקנים';
+      s.players.forEach(p=>{p.strikes=0;p.out=false});s.round=0;s.log=[];s.winner=null;s.black=[];
+      startRound(s,s.players[Math.floor(Math.random()*s.players.length)].id);return null}
+    case 'add':{
+      if(s.phase!=='turn'||from!==s.turn)return 'זה לא התור שלך';
+      const ch=String(a.ch||'');if(!/^[א-ת]$/.test(ch))return 'אות לא חוקית';
+      s.letters.push({ch,by:from});s.lastBy=from;
+      addLog(s,`✏️ ${nm(s,from)} אמר/ה "${ch}"`);
+      s.turn=nextActive(s,from);s.deadline=Date.now()+TURN_MS;
+      return null}
+    case 'challenge':{
+      if(s.phase!=='turn'||from!==s.turn)return 'זה לא התור שלך';
+      if(!s.lastBy)return 'אין את מי לאתגר עדיין';
+      s.phase='defend';s.accused=s.lastBy;s.challenger=from;
+      addLog(s,`🤥 ${nm(s,from)} קרא/ה ל${nm(s,s.lastBy)}: "שקרן!"`);
+      return null}
+    case 'defend':{
+      if(s.phase!=='defend'||from!==s.accused)return 'זה לא התור שלך';
+      s.claim={by:from,name:null};
+      if(a.admit){addLog(s,`😅 ${nm(s,from)} מודה: שיקרתי!`);finish(s,{loser:from,real:false,method:'admit'});return null}
+      const name=String(a.name||'').trim().slice(0,40); if(norm(name).length<2)return 'צריך לכתוב שם של מקום';
+      s.claim.name=name; addLog(s,`📍 ${nm(s,from)} חשב/ה על: ${name}`);
+      judgeClaim(s);return null}
+    case 'vote':{
+      if(s.phase!=='vote')return 'אין הצבעה עכשיו';
+      if(!voters(s).includes(from))return 'אתה לא מצביע בסבב הזה';
+      s.votes[from]=!!a.real;
+      if(voters(s).every(id=>id in s.votes))tally(s);
+      return null}
+    case 'endvote':{ if(!isHost||s.phase!=='vote')return 'אין הרשאה'; tally(s); return null}
+    case 'skip':{ if(!isHost||s.phase!=='turn')return 'אין הרשאה';
+      addLog(s,`⏭️ דילגו על ${nm(s,s.turn)}`); s.turn=nextActive(s,s.turn); s.deadline=Date.now()+TURN_MS; return null}
+    case 'timeout':{ if(!isHost||s.phase!=='turn'||!s.deadline||Date.now()<s.deadline-300)return null;
+      const t=s.turn; s.claim={by:t,name:null}; s.challenger=null;
+      addLog(s,`⏰ נגמר הזמן ל${nm(s,t)}!`);
+      finish(s,{loser:t,real:false,method:'timeout',reason:'עברו 30 שניות בלי אות'}); return null}
+    case 'next':{
+      if(s.phase!=='result')return null;
+      if(!isHost && !a.local)return 'המארח/ת ממשיך/ה';
+      const r=s.result; const st=P(s,r.loser).out?nextActive(s,r.loser):r.loser;
+      startRound(s,st);return null}
+    case 'lobby':{ if(!isHost)return 'אין הרשאה';
+      const keep=s.players.filter(p=>p.connected!==false);
+      Object.assign(s,newState()); s.players=keep.map((p,i)=>({...p,strikes:0,out:false,color:COLORS[i%COLORS.length]})); return null}
+  }
+  return 'פעולה לא מוכרת';
+}
+
+/* ================== NETWORK ================== */
+const PREFIX='bor-veam-haaretz-v1-';
+let myId = (()=>{try{let v=localStorage.getItem('bvh_pid');if(!v){v=rid();localStorage.setItem('bvh_pid',v)}return v}catch(e){return rid()}})();
+let myName = (()=>{try{return localStorage.getItem('bvh_name')||''}catch(e){return ''}})();
+const MOCK=new URLSearchParams(location.search).has('mock');
+if(MOCK){const q=new URLSearchParams(location.search).get('pid');if(q)myId=q}
+
+let clockOff=0;
+let S=newState(), mode=null, code=null, net=null, conns={}, connected=false;
+
+function hostAct(from,a){
+  const err=engine(S,from,a,from===myId);
+  if(err){ if(from===myId) toast(err); else sendTo(from,{t:'err',m:err}); return }
+  S.v++; broadcast(); render();
+}
+function act(a){
+  if(mode==='local') { const err=engine(S,a.as,{...a,local:true},true); if(err)toast(err); render(); return }
+  if(mode==='host') return hostAct(myId,a);
+  if(mode==='client'){ if(!connected){toast('אין חיבור למארח');return} net.send({t:'act',a}); }
+}
+function broadcast(){ S.hostNow=Date.now(); const msg={t:'state',s:S}; Object.values(conns).forEach(c=>{try{c.send(msg)}catch(e){}}) }
+function sendTo(pid,m){const c=conns[pid];if(c)try{c.send(m)}catch(e){}}
+
+/* --- PeerJS / mock transport --- */
+function makePeer(id){
+  if(MOCK) return new MockPeer(id);
+  if(!window.Peer) throw new Error('nopeer');
+  return id? new Peer(id,{debug:0}) : new Peer({debug:0});
+}
+// BroadcastChannel transport for local testing (?mock=1)
+class Emitter{constructor(){this.h={}}on(e,f){(this.h[e]=this.h[e]||[]).push(f);return this}emit(e,...a){(this.h[e]||[]).forEach(f=>f(...a))}}
+class MockConn extends Emitter{constructor(ch,me,other){super();this.ch=ch;this.me=me;this.other=other;this.open=true}
+  send(d){this.ch.postMessage({to:this.other,from:this.me,d:JSON.parse(JSON.stringify(d))})} close(){}}
+class MockPeer extends Emitter{
+  constructor(id){super();this.id=id||('c'+rid());this.ch=new BroadcastChannel('mockpeer');this.conns={};
+    this.ch.onmessage=e=>{const m=e.data;if(m.to!==this.id)return;
+      if(m.hello){const c=new MockConn(this.ch,this.id,m.from);this.conns[m.from]=c;this.emit('connection',c);setTimeout(()=>{c.emit('open');this.ch.postMessage({to:m.from,from:this.id,ack:1})},10);return}
+      if(m.ack){const c=this.conns[m.from];c&&c.emit('open');return}
+      const c=this.conns[m.from];c&&c.emit('data',m.d)};
+    setTimeout(()=>this.emit('open',this.id),20)}
+  connect(id){const c=new MockConn(this.ch,this.id,id);this.conns[id]=c;setTimeout(()=>this.ch.postMessage({to:id,from:this.id,hello:1}),30);return c}
+  destroy(){}}
+
+function hostRoom(){
+  if(!myName){toast('כתבו שם קודם');return}
+  code=String(Math.floor(1000+Math.random()*9000));
+  let peer;
+  try{peer=makePeer(PREFIX+code)}catch(e){return netFail()}
+  mode='host'; S=newState(); engine(S,myId,{type:'join',name:myName},true);
+  peer.on('open',()=>{render()});
+  peer.on('error',err=>{ if(err&&err.type==='unavailable-id'){ hostRoom(); } else if(err&&err.type!=='peer-unavailable'){toast('בעיית רשת: '+(err.type||''))} });
+  peer.on('connection',conn=>{
+    let pid=null;
+    conn.on('data',m=>{
+      if(m.t==='hello'){pid=m.pid; conns[pid]=conn; hostAct(pid,{type:'join',name:m.name}); if(!P(S,pid)) setTimeout(()=>conn.close&&conn.close(),500); else conn.send({t:'state',s:S}); return}
+      if(m.t==='act'&&pid) hostAct(pid,m.a);
+    });
+    conn.on('close',()=>{ if(pid&&conns[pid]===conn){delete conns[pid]; const p=P(S,pid); if(p){p.connected=false; if(S.phase==='lobby')S.players=S.players.filter(x=>x.id!==pid); S.v++; broadcast(); render()}} });
+  });
+  net=peer; render();
+}
+function joinRoom(c){
+  if(!myName){toast('כתבו שם קודם');return}
+  c=String(c||'').replace(/\D/g,''); if(c.length!==4){toast('קוד החדר הוא 4 ספרות');return}
+  code=c; mode='client'; connected=false; render();
+  let peer; try{peer=makePeer(null)}catch(e){return netFail()}
+  peer.on('open',()=>{
+    const conn=peer.connect(PREFIX+code,{reliable:true});
+    net=conn;
+    conn.on('open',()=>{connected=true; conn.send({t:'hello',pid:myId,name:myName}); render()});
+    conn.on('data',m=>{ if(m.t==='state'){S=m.s;clockOff=(S.hostNow||Date.now())-Date.now();render()} else if(m.t==='err'){toast(m.m)} });
+    conn.on('close',()=>{connected=false;toast('החיבור למארח נותק');render()});
+  });
+  peer.on('error',err=>{ if(err&&err.type==='peer-unavailable'){toast('לא מצאתי חדר עם הקוד הזה 🤔'); mode=null; render()} else toast('בעיית רשת'); });
+}
+function netFail(){toast('לא הצלחתי להתחבר לשרת המשחק – בדקו אינטרנט');mode=null;render()}
+
+/* ================== UI ================== */
+const $=s=>document.querySelector(s);
+let sel=null, localSetup=['','',''];
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+function avatar(p,size){return `<div class="av" style="background:${p.color};${size?`width:${size}px;height:${size}px`:''}">${esc((p.name||'?').trim()[0]||'?')}</div>`}
+function horns(n){return `<div class="horns" title="${TITLES[n]}">${[0,1,2].map(i=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>`}
+
+// who is "me" for this render
+function actor(){
+  if(mode!=='local')return myId;
+  if(S.phase==='turn')return S.turn;
+  if(S.phase==='defend')return S.accused;
+  return null;
+}
+
+function render(){
+  const app=$('#app');
+  $('#roomTag').classList.toggle('hidden',!(mode==='host'||mode==='client'));
+  $('#roomTag').textContent='חדר '+(code||'');
+  if(!mode) return renderHome(app);
+  if(mode==='client'&&!connected&&!S.players.length){app.innerHTML=`<div class="card center"><div style="width:120px;margin:auto">${ibexSVG('wink')}</div><h2>מתחברים לחדר ${esc(code)}…</h2><p class="muted">היעל מקפצת בין הסלעים</p><button class="btn ghost small" onclick="location.href=location.pathname">ביטול</button></div>`;return}
+  if(S.phase==='lobby') return renderLobby(app);
+  renderGame(app);
+}
+
+function renderHome(app){
+  const params=new URLSearchParams(location.search); const pre=params.get('room')||'';
+  app.innerHTML=`
+  <div class="hero">
+    <div class="mapbox">${mapSVG()}<div class="ibexOnMap">${ibexSVG('wink')}</div></div>
+    <div>
+      <h2>בור ועם הארץ</h2>
+      <div class="tag">עיר, כפר, מושב, קיבוץ, יישוב קהילתי – כל מקום, העיקר שיהיה בארץ! אות אחרי אות, עד שמישהו צועק <b>"שקרן!"</b></div>
+      <div class="titles"><span>פסילה 1: בור</span><span>2: בור ועם</span><span>3: בור ועם הארץ</span></div>
+      <div class="card">
+        <label class="lb">איך קוראים לך?</label>
+        <input class="txt" id="nameIn" maxlength="16" placeholder="למשל: נועם" value="${esc(myName)}">
+        <div class="homebtns" style="margin-top:14px">
+          <button class="btn" id="hostBtn">🏕️ פתיחת חדר חדש</button>
+          <div class="row" style="flex-wrap:nowrap">
+            <input class="txt" id="codeIn" inputmode="numeric" maxlength="4" placeholder="קוד חדר" value="${esc(pre)}" style="direction:ltr;text-align:center;letter-spacing:4px">
+            <button class="btn olive" id="joinBtn" style="white-space:nowrap">הצטרפות</button>
+          </div>
+          <button class="btn ghost small" id="localBtn">📱 בדיקה על מכשיר אחד (מעבירים את הטלפון)</button>
+          <button class="btn ghost small" id="rulesBtn">📜 איך משחקים?</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  const save=()=>{myName=$('#nameIn').value.trim();try{localStorage.setItem('bvh_name',myName)}catch(e){}};
+  $('#nameIn').oninput=save;
+  $('#hostBtn').onclick=()=>{save();hostRoom()};
+  $('#joinBtn').onclick=()=>{save();joinRoom($('#codeIn').value)};
+  $('#localBtn').onclick=()=>{mode='localsetup';renderLocalSetup(app)};
+  $('#rulesBtn').onclick=showRules;
+}
+
+function renderLocalSetup(app){
+  app.innerHTML=`<div class="card" style="max-width:520px;margin:auto">
+    <h2 style="color:var(--sign)">משחק על מכשיר אחד</h2>
+    <p class="muted">טוב לבדיקה או כשכולם יושבים יחד. 3 עד 10 שחקנים.</p>
+    <div id="lsList"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn ghost small" id="lsAdd">+ שחקן</button>
+      <button class="btn olive" id="lsGo" style="margin-inline-start:auto">יאללה מתחילים</button>
+    </div>
+    <button class="btn ghost small" style="margin-top:10px" onclick="mode=null;render()">→ חזרה</button>
+  </div>`;
+  const draw=()=>{$('#lsList').innerHTML=localSetup.map((n,i)=>`<div class="row" style="margin-top:8px;flex-wrap:nowrap"><div class="av" style="background:${COLORS[i]}">${i+1}</div><input class="txt" data-i="${i}" value="${esc(n)}" placeholder="שחקן ${i+1}">${localSetup.length>3?`<button class="btn ghost small" data-rm="${i}">✕</button>`:''}</div>`).join('');
+    document.querySelectorAll('#lsList input').forEach(el=>el.oninput=()=>localSetup[+el.dataset.i]=el.value);
+    document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{localSetup.splice(+b.dataset.rm,1);draw()});};
+  draw();
+  $('#lsAdd').onclick=()=>{if(localSetup.length<MAXP){localSetup.push('');draw()}};
+  $('#lsGo').onclick=()=>{
+    S=newState();mode='local';code=null;
+    localSetup.forEach((n,i)=>engine(S,'L'+i,{type:'join',name:n.trim()||('שחקן '+(i+1))},true));
+    engine(S,'L0',{type:'start'},true);render();
+  };
+}
+
+function renderLobby(app){
+  const isHost=mode==='host';
+  const link=location.origin+location.pathname+'?room='+code;
+  app.innerHTML=`<div class="card" style="max-width:640px;margin:auto">
+    <div class="mascot"><div class="ibex">${ibexSVG()}</div><div class="bubble">${isHost?'החדר פתוח! שלחו לחברים את הקוד':'נכנסת! מחכים שהמארח/ת יתחיל/ה'}<small>${S.players.length} מתוך 10 שחקנים · צריך לפחות 3</small></div></div>
+    <div class="muted center">קוד החדר</div>
+    <div class="codebig">${esc(code)}</div>
+    ${isHost?`<div class="row" style="justify-content:center;margin-top:8px">
+      <button class="btn ghost small" id="shareBtn">📤 שיתוף קישור</button>
+      <a class="btn ghost small" style="text-decoration:none" target="_blank" href="https://wa.me/?text=${encodeURIComponent('בואו לשחק בור ועם הארץ! 🐐 '+link)}">וואטסאפ</a></div>`:''}
+    <div class="plist">${S.players.map(p=>`<div class="pchip ${p.connected===false?'off':''}">${avatar(p)}<div class="nm">${esc(p.name)}</div>${p.id===myId?'<span class="you">את/ה</span>':''}${isHost&&p.id!==myId?`<button class="btn ghost small" style="margin-inline-start:auto;padding:2px 8px" data-kick="${esc(p.id)}">✕</button>`:''}</div>`).join('')}</div>
+    ${isHost?`<button class="btn olive block" id="startBtn" ${S.players.length<MINP?'disabled':''}>🚀 מתחילים לשחק</button>`:`<p class="center muted">⏳ מחכים להתחלה…</p>`}
+    <div class="center" style="margin-top:10px"><button class="btn ghost small" id="rulesBtn">📜 חוקים</button></div>
+  </div>`;
+  if(isHost){
+    $('#startBtn').onclick=()=>act({type:'start'});
+    $('#shareBtn').onclick=async()=>{try{if(navigator.share)await navigator.share({title:'בור ועם הארץ',text:'בואו לשחק! קוד: '+code,url:link});else{await navigator.clipboard.writeText(link);toast('הקישור הועתק')}}catch(e){}};
+    document.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>act({type:'kick',id:b.dataset.kick}));
+  }
+  $('#rulesBtn').onclick=showRules;
+}
+
+function bubbleText(){
+  const me=actor();
+  const w=word(S);
+  switch(S.phase){
+    case 'turn':
+      if(S.turn===me) return S.letters.length? ['התור שלך! תוסיף/י אות','ממשיכים מקום, או – אם נגמר – מתחילים מקום חדש. או שתצעק/י "שקרן!" על '+nm(S,S.lastBy)] : ['את/ה פותח/ת! תחשוב/י על יישוב בארץ','ותבחר/י את האות הראשונה שלו'];
+      return [`${nm(S,S.turn)} חושב/ת…`, w?'מה הוא/היא יוסיף/תוסיף?':'מחכים לאות הראשונה'];
+    case 'defend':
+      if(S.accused===me) return ['😳 קראו לך שקרן!','על איזה מקום חשבת?'];
+      return [`${nm(S,S.challenger)} קרא/ה ל${nm(S,S.accused)} שקרן!`,'רגע של אמת…'];
+    case 'vote': return [`${nm(S,S.claim.by)} חשב/ה על "${showName(S,S.claim.canon)}"`,'אבל יש הבדל של ו/י בכתיב – זה נחשב?'];
+    case 'result': return ['נו נו נו…',''];
+    case 'gameover': return ['המשחק נגמר!',''];
+  }
+  return ['',''];
+}
+
+function renderGame(app){
+  const me=actor(), isHost=mode==='host'||mode==='local';
+  const [b1,b2]=bubbleText();
+  const mood=S.phase==='defend'||S.phase==='vote'?'shock':(S.phase==='turn'&&S.turn===me?'wink':'');
+  let pass='';
+  if(mode==='local'){
+    const who=S.phase==='turn'?S.turn:S.phase==='defend'?S.accused:null;
+    if(who) pass=`<div class="passbar">📱 תעבירו את הטלפון ל${esc(nm(S,who))}</div>`;
+  }
+  const isNew=S.letters.length!==lastLen; lastLen=S.letters.length;
+  const tiles=S.letters.map((l,i)=>{const p=P(S,l.by)||{};return `<div class="tile ${isNew&&i===S.letters.length-1?'new':''}">${esc(l.ch)}<b style="background:${p.color}"></b></div>`}).join('');
+  const preview=(S.phase==='turn'&&S.turn===me&&sel)?`<div class="tile ghost">${esc(sel)}</div>`:'';
+
+  let controls='';
+  if(S.phase==='turn'&&S.turn===me){
+    const rows=['קראטופ','שדגכעיחל','זסבהנמצת'];
+    controls=`<div class="kbd">${rows.map(r=>`<div class="kr">${[...r].map(c=>`<button class="key ${sel===c?'sel':''}" data-k="${c}">${c}</button>`).join('')}</div>`).join('')}</div>
+    <div class="actions">
+      <button class="btn olive" id="addBtn" ${sel?'':'disabled'}>${sel?`הוספת "${sel}"`:'בחרו אות'}</button>
+      ${S.lastBy?`<button class="btn red" id="liarBtn">🤥 שקרן!</button>`:''}
+    </div>`;
+  } else if(S.phase==='defend'&&S.accused===me){
+    controls=`<div style="max-width:420px;margin:12px auto 0">
+      <label class="lb">על איזה מקום חשבת? (המקום שהאות שלך שייכת אליו)</label>
+      <input class="txt" id="defIn" placeholder="למשל: באר שבע">
+      <div class="actions"><button class="btn olive" id="defBtn">📍 זה המקום!</button><button class="btn ghost" id="admitBtn">😅 תפסת אותי, שיקרתי</button></div></div>`;
+  } else if(S.phase==='vote'){
+    const vs=voters(S); const yes=Object.values(S.votes).filter(v=>v).length, no=Object.values(S.votes).length-yes;
+    const canVote = mode==='local' ? vs.filter(id=>!(id in S.votes)) : (vs.includes(myId)&&!(myId in S.votes)?[myId]:[]);
+    controls=`<div class="center" style="margin-top:10px"><div class="display" style="font-size:26px">📍 ${esc(showName(S,S.claim.canon))}</div>
+      <div class="diffs">${(S.claim.diffs||[]).map(d=>`<div>✏️ ${esc(d)}</div>`).join('')}</div>
+      <div style="font-weight:700;margin-top:6px">כתיב מלא/חסר – מקבלים?</div>
+      <div class="muted">של ${esc(nm(S,S.claim.by))} · ✅ ${yes} · ❌ ${no} · נשארו ${vs.length-Object.keys(S.votes).length}</div>
+      ${canVote.map(id=>`<div class="vrow">${mode==='local'?`<b>${esc(nm(S,id))}:</b>`:''}<button class="btn olive small" data-vote="1" data-as="${esc(id)}">✅ מקבלים</button><button class="btn red small" data-vote="0" data-as="${esc(id)}">❌ פסילה</button></div>`).join('')}
+      ${mode!=='local'&&!canVote.length?'<p class="muted">מחכים לשאר ההצבעות…</p>':''}
+      ${mode==='host'?`<button class="btn ghost small" id="endVote" style="margin-top:8px">סיום הצבעה עכשיו</button>`:''}
+      <p class="muted">תיקו = הספק לטובת ${esc(nm(S,S.claim.by))}</p></div>`;
+  } else if(S.phase==='turn'&&mode==='host'){
+    const tp=P(S,S.turn); if(tp&&tp.connected===false) controls=`<div class="center"><button class="btn ghost small" id="skipBtn">⏭️ ${esc(tp.name)} התנתק/ה – דלג</button></div>`;
+  }
+
+  app.innerHTML=`<div class="game">
+    <div class="side"><div class="card"><div class="players">${S.players.map(p=>`
+      <div class="pl ${S.turn===p.id&&S.phase==='turn'?'turn':''} ${p.out?'out':''} ${p.connected===false?'off':''}">${avatar(p)}
+        <div class="info"><div class="nm">${esc(p.name)}${p.id===myId&&mode!=='local'?' <span class="you" style="font-size:10px;background:var(--gold);color:#fff;border-radius:5px;padding:0 4px">את/ה</span>':''}</div>
+        <div class="ttl ${p.strikes?'':'clean'}">${p.out?'❌ ':''}${TITLES[p.strikes]}</div></div>${horns(p.strikes)}</div>`).join('')}</div>
+      ${blackHTML()}
+      <div class="log">${S.log.map(l=>`<div>${esc(l)}</div>`).join('')}</div></div></div>
+    <div>
+      ${pass}
+      <div class="mascot"><div class="ibex">${ibexSVG(mood)}</div><div class="bubble">${esc(b1)}<small>${esc(b2)}</small></div></div>
+      <div class="card">
+        <div class="board">${mapSVG('bgmap')}
+          <div class="sign ${S.letters.length>10?'long':''} ${S.letters.length>20?'xlong':''}"><span class="km">סבב ${S.round}</span>${tiles||preview?tiles+preview:'<span class="empty">מחכים לאות הראשונה…</span>'}</div>
+        </div>
+        ${S.phase==='turn'?`<div class="timer" id="timer"><div class="tbar"><i id="tfill"></i></div><span id="tsec">30</span></div>`:''}
+        ${controls}
+      </div>
+    </div></div>`;
+
+  document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{sel=b.dataset.k;render()});
+  const add=$('#addBtn'); if(add) add.onclick=()=>{const a={type:'add',ch:sel,as:me};sel=null;act(a)};
+  const liar=$('#liarBtn'); if(liar) liar.onclick=()=>{sel=null;act({type:'challenge',as:me})};
+  const def=$('#defBtn'); if(def) def.onclick=()=>act({type:'defend',name:$('#defIn').value,as:me});
+  const adm=$('#admitBtn'); if(adm) adm.onclick=()=>act({type:'defend',admit:true,as:me});
+  document.querySelectorAll('[data-vote]').forEach(b=>b.onclick=()=>act({type:'vote',real:b.dataset.vote==='1',as:b.dataset.as}));
+  const ev=$('#endVote'); if(ev) ev.onclick=()=>act({type:'endvote'});
+  const sk=$('#skipBtn'); if(sk) sk.onclick=()=>act({type:'skip'});
+  renderOverlay();
+  tickTimer();
+}
+
+let lastOverlayKey=null, lastLen=-1;
+function renderOverlay(){
+  const ov=$('#overlay');
+  if(S.phase!=='result'&&S.phase!=='gameover'){ov.innerHTML='';lastOverlayKey=null;return}
+  const isHost=mode==='host'||mode==='local';
+  if(S.phase==='gameover'){
+    const w=P(S,S.winner);
+    ov.innerHTML=`<div class="ov"><div class="card"><div style="width:150px;margin:auto">${ibexSVG('wink')}</div>
+      <div class="bigemoji">🏆</div><h2 style="font-size:32px;color:var(--sign)">${esc(w?w.name:'')} ניצח/ה!</h2>
+      <p class="muted">היחיד/ה שלא הפך/ה ל"בור ועם הארץ"</p>
+      ${resultLines()}
+      ${isHost?`<button class="btn olive block" id="againBtn" style="margin-top:14px">🔁 משחק חדש</button>`:'<p class="muted">המארח/ת יכול/ה להתחיל משחק חדש</p>'}
+      ${mode==='local'?`<button class="btn ghost small" style="margin-top:10px" onclick="location.href=location.pathname">יציאה</button>`:''}</div></div>`;
+    const ag=$('#againBtn'); if(ag) ag.onclick=()=>{ if(mode==='local'){engine(S,'L0',{type:'start'},true);render()} else act({type:'lobby'}) };
+    return;
+  }
+  ov.innerHTML=`<div class="ov"><div class="card">${resultLines()}
+    ${isHost?`<button class="btn block" id="nextBtn" style="margin-top:16px">➡️ לסבב הבא</button>`:'<p class="muted" style="margin-top:14px">המארח/ת ממשיך/ה לסבב הבא…</p>'}</div></div>`;
+  const nb=$('#nextBtn'); if(nb) nb.onclick=()=>act({type:'next'});
+}
+function resultLines(){
+  const r=S.result; if(!r) return '';
+  let head='',body='';
+  const methodTxt={db:'✔️ נמצא ברשימת היישובים',vote:'🗳️ הקהל הצביע על הכתיב',admit:'',rule:''}[r.method]||'';
+  if(r.method==='timeout'){
+    head=`<div class="bigemoji">⏰</div><h2>נגמר הזמן!</h2>`;body=`<p><b>${esc(nm(S,r.claimBy))}</b> לא אמר/ה אות תוך 30 שניות</p>`;
+  } else if(r.method==='admit'){
+    head=`<div class="bigemoji">🤥</div><h2>נתפס/ה בשקר!</h2>`;body=`<p><b>${esc(nm(S,r.claimBy))}</b> הודה/תה שזרק/ה אות סתם</p>`;
+  } else if(r.real){
+    head=`<div class="bigemoji">😇</div><h2>דווקא אמת!</h2>`;body=`<p><b>${esc(nm(S,r.claimBy))}</b> חשב/ה על <b>${esc(r.name)}</b><br><span class="muted">${methodTxt}</span></p><p>אז <b>${esc(nm(S,r.challenger))}</b> שקרא/ה "שקרן" – חוטף/ת</p>`;
+  } else {
+    head=`<div class="bigemoji">🤥</div><h2>שקרן!</h2>`;body=`<p><b>${esc(nm(S,r.claimBy))}</b> אמר/ה <b>${esc(r.name)}</b>${r.reason?`<br><span class="muted">${esc(r.reason)}</span>`:`<br><span class="muted">${methodTxt}</span>`}</p>`;
+  }
+  const lose=r.loser?`<div style="margin-top:6px">${esc(nm(S,r.loser))} עכשיו:</div><div class="newtitle">${esc(r.title)}${r.out?' ❌':''}</div>${r.out?'<p class="muted">ויוצא/ת מהמשחק</p>':''}`:'';
+  const split=r.split&&r.split.length?`<div class="split"><div class="muted">ככה הבנתי את האותיות <b style="direction:ltr;display:inline-block">${esc(r.word)}</b>:</div><div class="chips">${r.split.map(n=>`<span>${esc(n)}</span>`).join('<i>←</i>')}</div></div>`:'';
+  const added=r.added&&r.added.length?`<div class="muted" style="margin-top:6px">🚫 נכנסו לרשימה השחורה: ${r.added.map(esc).join(', ')}</div>`:'';
+  return head+body+lose+split+added;
+}
+function blackHTML(){
+  if(!S.black||!S.black.length) return '';
+  return `<div class="black"><div class="bt">🚫 רשימה שחורה <span class="muted">(אסור לחזור)</span></div><div class="chips">${S.black.map(b=>`<span>${esc(b.name)}</span>`).join('')}</div></div>`;
+}
+
+function showRules(){
+  $('#overlay').innerHTML=`<div class="ov" id="rulesOv"><div class="card" style="text-align:right;max-height:85vh;overflow:auto">
+    <div class="mascot"><div class="ibex" style="width:70px">${ibexSVG('wink')}</div><div class="bubble">ככה משחקים!</div></div>
+    <ol class="rules">
+      <li>מי שפותח חושב על יישוב בארץ – עיר, כפר, מושב, קיבוץ, יישוב קהילתי או כל צורת התיישבות אחרת – ובוחר את <b>האות הראשונה</b> שלו.</li>
+      <li>כל אחד בתורו מוסיף <b>אות אחת</b> – כך שיתקבל התחלה של מקום אמיתי שהוא חושב עליו (לא חייב להיות אותו מקום של הקודם).</li>
+      <li>כשמקום נגמר <b>לא מכריזים!</b> הבא בתור פשוט מתחיל מקום חדש, וכל השאר צריכים להבין לבד. כל האותיות של הסבב מופיעות ברצף אחד.</li>
+      <li>אפשר גם לבלף ולזרוק אות סתם… 😏</li>
+      <li>במקום להוסיף אות, אפשר לצעוק <b>"שקרן!"</b> על מי שלפניך. הוא צריך לחשוף על איזה מקום חשב.</li>
+      <li>אם הוא שיקר – <b>הוא</b> מקבל פסילה רעה. אם המקום אמיתי – <b>מי שצעק</b> מקבל פסילה רעה.</li>
+      <li>היעל יודעת לפרק את רצף האותיות למקומות ובודקת מול רשימת היישובים שלה. <b>מקום שלא ברשימה = פסילה.</b></li>
+      <li>רק כשיש הבדל של <b>ו</b> או <b>י</b> בכתיב (כתיב מלא/חסר – למשל דימונה/דמונה) – השחקנים מצביעים אם זה נחשב.</li>
+      <li>הסבב נגמר כשמישהו מקבל פסילה רעה. כל המקומות שנאמרו בו נכנסים ל<b>רשימה השחורה</b> – ואסור להגיד אותם שוב במשחק.</li>
+      <li>⏰ לכל אחד יש <b>30 שניות</b> להגיד אות (או לצעוק "שקרן!"). לא הספקת? פסילה רעה.</li>
+      <li>פסילה 1: <b>בור</b> · 2: <b>בור ועם</b> · 3: <b>בור ועם הארץ</b> – ויוצאים. האחרון שנשאר מנצח!</li>
+    </ol>
+    <button class="btn block" onclick="document.getElementById('overlay').innerHTML='';render()">הבנתי, יאללה</button></div></div>`;
+}
+
+// ---- טיימר ----
+let lastBeep=null, actx=null;
+function beep(f){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(actx.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.15);o.stop(actx.currentTime+.16)}catch(e){}}
+function tickTimer(){
+  const el=$('#timer'); if(!el||S.phase!=='turn'||!S.deadline) return;
+  const left=Math.max(0,S.deadline-(Date.now()+clockOff));
+  const sec=Math.ceil(left/1000);
+  $('#tsec').textContent=sec; $('#tfill').style.width=(left/TURN_MS*100)+'%';
+  el.classList.toggle('low',sec<=10);
+  const mine = mode==='local' || S.turn===myId;
+  if(mine && sec<=5 && sec>0 && lastBeep!==S.deadline+'-'+sec){lastBeep=S.deadline+'-'+sec;beep(sec===1?880:660)}
+}
+setInterval(()=>{
+  tickTimer();
+  if((mode==='host'||mode==='local') && S.phase==='turn' && S.deadline && Date.now()>S.deadline){
+    if(mode==='host') hostAct(myId,{type:'timeout'}); else {engine(S,null,{type:'timeout'},true);render()}
+  }
+},250);
+render();
+</script>
+</body>
+</html>
